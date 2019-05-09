@@ -1,0 +1,13 @@
+.button {
+  height: 40px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+mat-row {
+  cursor: pointer;
+}
+
+mat-row:hover {
+  background-color: lightgray;
+}

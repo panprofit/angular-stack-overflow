@@ -1,0 +1,24 @@
+<div fxLayout="row wrap"
+     fxLayoutGap="0.5%"
+     fxLayoutAlign="center">
+  <mat-card class="mat-card"
+            *ngIf="(question$ | async) as question">
+    <mat-card-header>
+      <mat-card-title>{{question.title}}</mat-card-title>
+      <mat-card-subtitle>Author: {{question.owner.display_name}}</mat-card-subtitle>
+      <mat-card-subtitle>Published: {{question.creation_date * 1000 | date: 'medium'}}</mat-card-subtitle>
+      <mat-card-subtitle><a href="{{question.link}}">Link to original</a></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="mat-card-content">
+      <div [innerHtml]="question.body | sanitize"></div>
+    </mat-card-content>
+    <mat-chip-list fxLayoutAlign="center">
+      <mat-chip *ngFor="let tag of question.tags"
+                class="mat-chip"
+                title="Search questions by tag"
+                [routerLink]="['/']"
+                [queryParams]="{tag: tag}">{{tag}}
+      </mat-chip>
+    </mat-chip-list>
+  </mat-card>
+</div>

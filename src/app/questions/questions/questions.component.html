@@ -1,0 +1,46 @@
+<form #form="ngForm"
+      fxLayoutAlign="center">
+  <mat-form-field class="search-form">
+    <input matInput
+           name="search"
+           ngModel
+           placeholder="Search Tag"
+           type="text">
+  </mat-form-field>
+  <button mat-raised-button
+          class="button"
+          [routerLink]=""
+          [queryParams]="{tag: form.value.search}"
+          color="primary">Search
+  </button>
+</form>
+<mat-table [dataSource]="questionsList$ | async">
+  <!-- User name Definition -->
+  <ng-container cdkColumnDef="author">
+    <mat-header-cell fxFlex="20%"
+                     *cdkHeaderCellDef>Author
+    </mat-header-cell>
+    <mat-cell fxFlex="20%"
+              *cdkCellDef="let row">{{row?.owner?.display_name}}</mat-cell>
+  </ng-container>
+
+  <!-- Age Definition -->
+  <ng-container cdkColumnDef="title">
+    <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">{{row.title}}</mat-cell>
+  </ng-container>
+
+  <!-- Title Definition -->
+  <ng-container cdkColumnDef="date">
+    <mat-header-cell fxFlex="10%"
+                     *cdkHeaderCellDef>Creation date
+    </mat-header-cell>
+    <mat-cell fxFlex="10%"
+              *cdkCellDef="let row">{{row.creation_date * 1000 | date: 'medium'}}</mat-cell>
+  </ng-container>
+
+  <!-- Header and Row Declarations -->
+  <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']"></mat-header-row>
+  <mat-row *cdkRowDef="let row; columns: ['author', 'title', 'date']" [routerLink]="[row.question_id]"></mat-row>
+</mat-table>
+
