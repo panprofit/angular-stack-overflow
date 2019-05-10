@@ -1,12 +1,15 @@
 import {NgModule} from '@angular/core';
 import {SanitizePipe} from './sanitize.pipe';
+import {UnescapePipe} from './unescape.pipe';
 
 @NgModule({
   declarations: [
-    SanitizePipe
+    SanitizePipe,
+    UnescapePipe
   ],
   exports: [
-    SanitizePipe
+    SanitizePipe,
+    UnescapePipe
   ],
   imports: []
 })

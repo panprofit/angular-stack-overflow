@@ -21,13 +21,13 @@
                      *cdkHeaderCellDef>Author
     </mat-header-cell>
     <mat-cell fxFlex="20%"
-              *cdkCellDef="let row">{{row?.owner?.display_name}}</mat-cell>
+              *cdkCellDef="let row">{{row?.owner?.display_name | unescape}}</mat-cell>
   </ng-container>
 
   <!-- Age Definition -->
   <ng-container cdkColumnDef="title">
     <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
-    <mat-cell *cdkCellDef="let row">{{row.title}}</mat-cell>
+    <mat-cell *cdkCellDef="let row">{{row.title | unescape}}</mat-cell>
   </ng-container>
 
   <!-- Title Definition -->
