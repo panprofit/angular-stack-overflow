@@ -23,7 +23,7 @@ export class QuestionsService {
   }
 
   getQuestion(id: number): Observable<QuestionData> {
-    return this.getRequest(`questions/${id}`, {filter: 'withbody'})
+    return this.getRequest(`questions/${id}`, {})
       .pipe(
         map((data: QuestionsData) => data.items[0])
       );
@@ -32,7 +32,8 @@ export class QuestionsService {
   getRequest(url: string, queryParams: object): Observable<object> {
     const params = Object.assign({}, queryParams, {
       key: this.config.apiKey,
-      site: 'stackoverflow'
+      site: 'stackoverflow',
+      filter: 'withbody'
     });
     return this.http.get(`${this.config.apiUrl}/${this.config.apiVersion}/${url}`, {params});
   }

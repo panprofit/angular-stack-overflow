@@ -21,13 +21,13 @@
                      *cdkHeaderCellDef>Author
     </mat-header-cell>
     <mat-cell fxFlex="20%"
-              *cdkCellDef="let row">{{row?.owner?.display_name | unescape}}</mat-cell>
+              *cdkCellDef="let question">{{question?.owner?.display_name | unescape}}</mat-cell>
   </ng-container>
 
   <!-- Age Definition -->
   <ng-container cdkColumnDef="title">
     <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
-    <mat-cell *cdkCellDef="let row">{{row.title | unescape}}</mat-cell>
+    <mat-cell *cdkCellDef="let question">{{question.title | unescape}}</mat-cell>
   </ng-container>
 
   <!-- Title Definition -->
@@ -36,13 +36,13 @@
                      *cdkHeaderCellDef>Creation date
     </mat-header-cell>
     <mat-cell fxFlex="10%"
-              *cdkCellDef="let row">{{row.creation_date * 1000 | date: 'medium'}}</mat-cell>
+              *cdkCellDef="let question">{{question.creation_date * 1000 | date: 'medium'}}</mat-cell>
   </ng-container>
 
   <!-- Header and Row Declarations -->
   <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']"></mat-header-row>
-  <mat-row *cdkRowDef="let row; columns: ['author', 'title', 'date']"
+  <mat-row *cdkRowDef="let question; columns: ['author', 'title', 'date']"
            title="Click to preview"
-           [routerLink]="[row.question_id]"></mat-row>
+           (click)="openModal(question)"></mat-row>
 </mat-table>
 

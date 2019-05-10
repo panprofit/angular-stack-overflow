@@ -3,6 +3,8 @@ import {QuestionsService, QuestionData} from '../../shared/questions.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
+import {MatDialog} from '@angular/material';
+import {QuestionComponent} from '../question/question.component';
 
 @Component({
   selector: 'app-questions',
@@ -16,7 +18,8 @@ export class QuestionsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private questionsService: QuestionsService
+    private questionsService: QuestionsService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -24,9 +27,20 @@ export class QuestionsComponent implements OnInit {
     this.questionsList$ = this.route.queryParams.pipe(
       flatMap((params: Params) => {
         this.tag = params.tag;
-        return this.questionsService.getList({tagged: params.tag})
+        return this.questionsService.getList({tagged: params.tag});
       })
     );
+  }
+
+  openModal(data: QuestionData) {
+    const dialogRef = this.dialog.open(QuestionComponent, {
+      width: '650px',
+      data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

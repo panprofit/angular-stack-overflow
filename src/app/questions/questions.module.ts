@@ -1,11 +1,20 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {QuestionsComponent} from './questions/questions.component';
+import {QuestionComponent} from './question/question.component';
 import {RouterModule, Routes} from '@angular/router';
 import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
 import {IConfig, QuestionsService} from '../shared/questions.service';
 import {FlexModule} from '@angular/flex-layout';
-import {MatButtonModule, MatFormFieldModule, MatInputModule, MatTableModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatChipsModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatTableModule
+} from '@angular/material';
 import {SharedModule} from '../shared/shared.module';
 import {FormsModule} from '@angular/forms';
 import {CdkTableModule} from '@angular/cdk/table';
@@ -14,16 +23,16 @@ const routes: Routes = [
   {
     path: '',
     component: QuestionsComponent
-  },
-  {
-    path: ':id',
-    loadChildren: '../question/question.module#QuestionModule'
   }
 ];
 
 @NgModule({
   declarations: [
-    QuestionsComponent
+    QuestionsComponent,
+    QuestionComponent
+  ],
+  entryComponents: [
+    QuestionComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +46,10 @@ const routes: Routes = [
     SharedModule,
     FormsModule,
     MatTableModule,
-    CdkTableModule
+    CdkTableModule,
+    MatCardModule,
+    MatChipsModule,
+    MatDialogModule
   ],
   exports: [RouterModule]
 })

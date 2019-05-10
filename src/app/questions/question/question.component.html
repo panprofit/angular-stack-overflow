@@ -1,0 +1,41 @@
+<div mat-dialog-title>
+  <mat-card-title>{{question.title | unescape}}</mat-card-title>
+  <mat-card-subtitle>Author: {{question.owner.display_name | unescape}}</mat-card-subtitle>
+  <mat-card-subtitle>Published: {{question.creation_date * 1000 | date: 'medium'}}</mat-card-subtitle>
+  <mat-card-subtitle>
+    <a href="{{question.link}}">Link to original</a>
+  </mat-card-subtitle>
+</div>
+<div fxLayout="row wrap"
+     fxLayoutAlign="center">
+  <mat-card class="mat-card"
+            mat-dialog-content>
+    <mat-card-content class="mat-card-content">
+      <div [innerHtml]="question.body | sanitize"></div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div fxLayout="column"
+     fxLayoutGap="0.5%"
+     fxLayoutAlign="center">
+  <div mat-dialog-actions
+       fxLayout="row wrap"
+       fxLayoutAlign="center">
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of question.tags"
+                class="mat-chip"
+                title="Search questions by tag"
+                (click)="modal.close()"
+                [routerLink]="['/']"
+                [queryParams]="{tag: tag}">{{tag}}
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+  <div mat-dialog-actions
+       fxLayoutAlign="center">
+    <button mat-raised-button
+            class="close"
+            (click)="modal.close()">Close
+    </button>
+  </div>
+</div>
