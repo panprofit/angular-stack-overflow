@@ -41,6 +41,8 @@
 
   <!-- Header and Row Declarations -->
   <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']"></mat-header-row>
-  <mat-row *cdkRowDef="let row; columns: ['author', 'title', 'date']" [routerLink]="[row.question_id]"></mat-row>
+  <mat-row *cdkRowDef="let row; columns: ['author', 'title', 'date']"
+           title="Click to preview"
+           [routerLink]="[row.question_id]"></mat-row>
 </mat-table>
 
