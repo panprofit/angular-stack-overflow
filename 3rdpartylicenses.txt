@@ -116,6 +116,8 @@ THE SOFTWARE.
 
 @angular/material/chips
 
+@angular/material/dialog
+
 @angular/material/form-field
 
 @angular/material/table
