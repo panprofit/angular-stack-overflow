@@ -3,7 +3,7 @@
   <mat-card-subtitle>Author: {{question.owner.display_name | unescape}}</mat-card-subtitle>
   <mat-card-subtitle>Published: {{question.creation_date * 1000 | date: 'medium'}}</mat-card-subtitle>
   <mat-card-subtitle>
-    <a href="{{question.link}}">Link to original</a>
+    <a href="{{question.link}}" title="Link to original">Link to original</a>
   </mat-card-subtitle>
 </div>
 <div fxLayout="row wrap"
@@ -34,7 +34,7 @@
   <div mat-dialog-actions
        fxLayoutAlign="center">
     <button mat-raised-button
-            class="close"
+            title="Close modal"
             (click)="modal.close()">Close
     </button>
   </div>
