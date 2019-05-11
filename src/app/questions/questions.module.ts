@@ -18,6 +18,7 @@ import {
 import {SharedModule} from '../shared/shared.module';
 import {FormsModule} from '@angular/forms';
 import {CdkTableModule} from '@angular/cdk/table';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 const routes: Routes = [
   {
@@ -49,7 +50,8 @@ const routes: Routes = [
     CdkTableModule,
     MatCardModule,
     MatChipsModule,
-    MatDialogModule
+    MatDialogModule,
+    InfiniteScrollModule
   ],
   exports: [RouterModule]
 })

@@ -1,7 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,29 +14,30 @@ export class QuestionsService {
   ) {
   }
 
-  getList({tagged = '', sort = 'creation', order = 'desc'}): Observable<Array<QuestionData>> {
-    return this.getRequest('search/advanced', {tagged, sort, order})
-      .pipe(
-        map((data: QuestionsData) => data.items)
-      );
+  getList(config: QueryConfig): Observable<object> {
+    return this.getRequest('search/advanced', config);
   }
 
-  getQuestion(id: number): Observable<QuestionData> {
-    return this.getRequest(`questions/${id}`, {})
-      .pipe(
-        map((data: QuestionsData) => data.items[0])
-      );
-  }
-
-  getRequest(url: string, queryParams: object): Observable<object> {
+  getRequest(url: string, queryParams: QueryConfig): Observable<object> {
     const params = Object.assign({}, queryParams, {
       key: this.config.apiKey,
       site: 'stackoverflow',
-      filter: 'withbody'
+      filter: 'withbody',
+      pagesize: '30',
+      sort: 'creation',
+      order: 'desc'
     });
     return this.http.get(`${this.config.apiUrl}/${this.config.apiVersion}/${url}`, {params});
   }
 
+}
+
+export interface QueryConfig {
+  tagged?: string;
+  sort?: string;
+  order?: string;
+  page?: number;
+  pagesize?: number;
 }
 
 export interface QuestionsData {

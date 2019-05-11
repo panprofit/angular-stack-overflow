@@ -10,39 +10,38 @@
   <button mat-raised-button
           class="button"
           [routerLink]=""
-          [queryParams]="{tag: form.value.search}"
+          [queryParams]="{tagged: form.value.search}"
           color="primary">Search
   </button>
 </form>
-<mat-table [dataSource]="questionsList$ | async">
-  <!-- User name Definition -->
-  <ng-container cdkColumnDef="author">
-    <mat-header-cell fxFlex="20%"
-                     *cdkHeaderCellDef>Author
-    </mat-header-cell>
-    <mat-cell fxFlex="20%"
-              *cdkCellDef="let question">{{question?.owner?.display_name | unescape}}</mat-cell>
-  </ng-container>
+<mat-card>
+  <mat-card-content>
+    <mat-table [dataSource]="questionsList$">
+      <ng-container cdkColumnDef="author">
+        <mat-header-cell fxFlex="20%"
+                         *cdkHeaderCellDef>Author
+        </mat-header-cell>
+        <mat-cell fxFlex="20%"
+                  *cdkCellDef="let question">{{question?.owner?.display_name | unescape}}</mat-cell>
+      </ng-container>
 
-  <!-- Age Definition -->
-  <ng-container cdkColumnDef="title">
-    <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
-    <mat-cell *cdkCellDef="let question">{{question.title | unescape}}</mat-cell>
-  </ng-container>
+      <ng-container cdkColumnDef="title">
+        <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
+        <mat-cell *cdkCellDef="let question">{{question.title | unescape}}</mat-cell>
+      </ng-container>
 
-  <!-- Title Definition -->
-  <ng-container cdkColumnDef="date">
-    <mat-header-cell fxFlex="10%"
-                     *cdkHeaderCellDef>Creation date
-    </mat-header-cell>
-    <mat-cell fxFlex="10%"
-              *cdkCellDef="let question">{{question.creation_date * 1000 | date: 'medium'}}</mat-cell>
-  </ng-container>
+      <ng-container cdkColumnDef="date">
+        <mat-header-cell fxFlex="15%"
+                         *cdkHeaderCellDef>Creation date
+        </mat-header-cell>
+        <mat-cell fxFlex="15%"
+                  *cdkCellDef="let question">{{question.creation_date * 1000 | date: 'medium'}}</mat-cell>
+      </ng-container>
 
-  <!-- Header and Row Declarations -->
-  <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']"></mat-header-row>
-  <mat-row *cdkRowDef="let question; columns: ['author', 'title', 'date']"
-           title="Click to preview"
-           (click)="openModal(question)"></mat-row>
-</mat-table>
-
+      <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']; sticky: true"></mat-header-row>
+      <mat-row *cdkRowDef="let question; columns: ['author', 'title', 'date']"
+               title="Click to preview"
+               (click)="openModal(question)"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>

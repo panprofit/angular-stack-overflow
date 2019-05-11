@@ -11,3 +11,8 @@ mat-row {
 mat-row:hover {
   background-color: lightgray;
 }
+
+mat-table {
+  /*overflow: auto;*/
+  /*max-height: 800px;*/
+}

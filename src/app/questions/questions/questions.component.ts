@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {QuestionsService, QuestionData} from '../../shared/questions.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {flatMap} from 'rxjs/operators';
+import {QuestionsService, QuestionData, QueryConfig, QuestionsData} from '../../shared/questions.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {BehaviorSubject, combineLatest, fromEvent, merge, Observable, of} from 'rxjs';
+import {debounceTime, distinct, flatMap, map, filter, tap, takeWhile} from 'rxjs/operators';
 import {MatDialog} from '@angular/material';
 import {QuestionComponent} from '../question/question.component';
 
@@ -13,7 +13,27 @@ import {QuestionComponent} from '../question/question.component';
 })
 export class QuestionsComponent implements OnInit {
   public questionsList$: Observable<Array<QuestionData>>;
-  public tag: string;
+  public config: QueryConfig;
+
+  private cache = [];
+  private hasMore = true;
+  private pageByManual$ = new BehaviorSubject(1);
+
+  private onScroll$ = fromEvent(window, 'scroll')
+    .pipe(
+      map(() => window.scrollY),
+      filter((current) => current >= document.body.offsetHeight - window.innerHeight),
+      debounceTime(200),
+      map((data) => Math.floor(data / 100)),
+      distinct(),
+      map(() => this.pageByManual$.getValue())
+    );
+
+  private pageToLoad$ = merge(this.onScroll$, of(1))
+    .pipe(
+      distinct(),
+      tap((page) => this.pageByManual$.next(page + 1))
+    );
 
   constructor(
     private route: ActivatedRoute,
@@ -25,21 +45,30 @@ export class QuestionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.questionsList$ = this.route.queryParams.pipe(
-      flatMap((params: Params) => {
-        this.tag = params.tag;
-        return this.questionsService.getList({tagged: params.tag});
-      })
+      flatMap(({tagged = ''}) => {
+          this.pageByManual$.next(1);
+          return this.pageToLoad$.pipe(
+            takeWhile(() => this.hasMore),
+            flatMap((page: number) =>
+              this.questionsService.getList(this.config = {page, tagged})
+                .pipe(
+                  map((data: QuestionsData) => {
+                    this.cache.push(...data.items);
+                    this.hasMore = data.has_more;
+                    return this.cache;
+                  })
+                )
+            )
+          );
+        }
+      )
     );
   }
 
   openModal(data: QuestionData) {
-    const dialogRef = this.dialog.open(QuestionComponent, {
+    this.dialog.open(QuestionComponent, {
       width: '650px',
       data
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
     });
   }
 
