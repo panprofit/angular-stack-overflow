@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {QuestionsService, QuestionData, QueryConfig, QuestionsData} from '../../shared/questions.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject, combineLatest, fromEvent, merge, Observable, of} from 'rxjs';
+import {QuestionsService, QuestionData, QuestionsData} from '../../shared/questions.service';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {BehaviorSubject, fromEvent, merge, Observable, of} from 'rxjs';
 import {debounceTime, distinct, flatMap, map, filter, tap, takeWhile} from 'rxjs/operators';
 import {MatDialog} from '@angular/material';
 import {QuestionComponent} from '../question/question.component';
@@ -13,10 +13,11 @@ import {QuestionComponent} from '../question/question.component';
 })
 export class QuestionsComponent implements OnInit {
   public questionsList$: Observable<Array<QuestionData>>;
-  public config: QueryConfig;
 
-  private cache = [];
+  private tagged: string;
+  private cache: Array<QuestionData>;
   private hasMore = true;
+
   private pageByManual$ = new BehaviorSubject(1);
 
   private onScroll$ = fromEvent(window, 'scroll')
@@ -45,23 +46,22 @@ export class QuestionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.questionsList$ = this.route.queryParams.pipe(
-      flatMap(({tagged = ''}) => {
-          this.pageByManual$.next(1);
-          return this.pageToLoad$.pipe(
-            takeWhile(() => this.hasMore),
-            flatMap((page: number) =>
-              this.questionsService.getList(this.config = {page, tagged})
-                .pipe(
-                  map((data: QuestionsData) => {
-                    this.cache.push(...data.items);
-                    this.hasMore = data.has_more;
-                    return this.cache;
-                  })
-                )
-            )
-          );
-        }
-      )
+      tap(() => {
+        window.scrollTo(0, 0);
+        this.cache = [];
+        this.pageByManual$.next(1);
+      }),
+      flatMap((params: Params) => {
+        this.tagged = params.tagged;
+        return this.pageToLoad$;
+      }),
+      takeWhile(() => this.hasMore),
+      flatMap((page: number) => this.questionsService.getList({page, tagged: this.tagged})),
+      map((data: QuestionsData) => {
+        this.cache.push(...data.items);
+        this.hasMore = data.has_more;
+        return this.cache;
+      })
     );
   }
 
