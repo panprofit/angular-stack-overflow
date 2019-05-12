@@ -18,6 +18,10 @@
 
 .header {
   font-weight: bold;
+  padding: 15px;
+  margin-bottom: 1px;
+  font-size: 15px;
+  border-bottom: thin solid lightgrey;
 }
 
 cdk-virtual-scroll-viewport {

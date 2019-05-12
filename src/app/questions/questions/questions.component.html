@@ -9,6 +9,7 @@
   </mat-form-field>
   <button mat-raised-button
           class="button"
+          title="Search"
           [routerLink]=""
           [queryParams]="{tagged: form.value.search}"
           color="primary">Search
@@ -17,7 +18,7 @@
 
 <mat-card>
   <mat-card-content>
-    <div class="row header">
+    <div class="header">
       <div fxFlex="20%">Author</div>
       <div fxFlex="65%">Title</div>
       <div fxFlex="15%">Creation date</div>
@@ -26,6 +27,7 @@
                                  (scrolledIndexChange)="onScroll($event)"
                                  itemSize="48">
       <div class="row"
+           title="Click to preview"
            *cdkVirtualFor="let question of questionsList$"
            (click)="openModal(question)">
         <div fxFlex="20%">{{question.owner?.display_name | unescape}}</div>
