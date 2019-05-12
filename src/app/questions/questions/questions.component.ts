@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {QuestionsService, QuestionData, QuestionsData} from '../../shared/questions.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {BehaviorSubject, fromEvent, merge, Observable, of} from 'rxjs';
-import {debounceTime, distinct, flatMap, map, filter, tap, takeWhile} from 'rxjs/operators';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {flatMap, map, takeWhile, tap} from 'rxjs/operators';
 import {MatDialog} from '@angular/material';
 import {QuestionComponent} from '../question/question.component';
 
@@ -13,28 +13,11 @@ import {QuestionComponent} from '../question/question.component';
 })
 export class QuestionsComponent implements OnInit {
   public questionsList$: Observable<Array<QuestionData>>;
-
-  private tagged: string;
-  private cache: Array<QuestionData>;
+  public cache: Array<QuestionData> = [];
   private hasMore = true;
+  private tagged: string;
 
-  private pageByManual$ = new BehaviorSubject(1);
-
-  private onScroll$ = fromEvent(window, 'scroll')
-    .pipe(
-      map(() => window.scrollY),
-      filter((current) => current >= document.body.offsetHeight - window.innerHeight),
-      debounceTime(200),
-      map((data) => Math.floor(data / 100)),
-      distinct(),
-      map(() => this.pageByManual$.getValue())
-    );
-
-  private pageToLoad$ = merge(this.onScroll$, of(1))
-    .pipe(
-      distinct(),
-      tap((page) => this.pageByManual$.next(page + 1))
-    );
+  private loadMore$ = new BehaviorSubject(1);
 
   constructor(
     private route: ActivatedRoute,
@@ -45,24 +28,22 @@ export class QuestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.questionsList$ = this.route.queryParams.pipe(
-      tap(() => {
-        window.scrollTo(0, 0);
-        this.cache = [];
-        this.pageByManual$.next(1);
-      }),
-      flatMap((params: Params) => {
-        this.tagged = params.tagged;
-        return this.pageToLoad$;
-      }),
-      takeWhile(() => this.hasMore),
-      flatMap((page: number) => this.questionsService.getList({page, tagged: this.tagged})),
-      map((data: QuestionsData) => {
-        this.cache.push(...data.items);
-        this.hasMore = data.has_more;
-        return this.cache;
-      })
-    );
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.questionsList$ = this.route.queryParams
+      .pipe(
+        tap((params: Params) => {
+          this.tagged = params.tagged || '';
+          this.cache = [];
+        }),
+        flatMap(() => this.loadMore$),
+        takeWhile(() => this.hasMore),
+        flatMap((page: number) => this.questionsService.getList({page, tagged: this.tagged})),
+        map((data: QuestionsData) => {
+          this.hasMore = data.has_more;
+          this.cache.push(...data.items);
+          return this.cache;
+        })
+      );
   }
 
   openModal(data: QuestionData) {
@@ -72,4 +53,9 @@ export class QuestionsComponent implements OnInit {
     });
   }
 
+  onScroll(index) {
+    if (this.cache.length && this.cache.length === (index + 17)) {
+      this.loadMore$.next(this.loadMore$.getValue() + 1);
+    }
+  }
 }

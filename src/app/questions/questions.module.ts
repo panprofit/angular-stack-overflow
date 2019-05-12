@@ -12,13 +12,13 @@ import {
   MatChipsModule,
   MatDialogModule,
   MatFormFieldModule,
-  MatInputModule,
+  MatInputModule, MatSortModule,
   MatTableModule
 } from '@angular/material';
 import {SharedModule} from '../shared/shared.module';
 import {FormsModule} from '@angular/forms';
 import {CdkTableModule} from '@angular/cdk/table';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 const routes: Routes = [
   {
@@ -51,7 +51,8 @@ const routes: Routes = [
     MatCardModule,
     MatChipsModule,
     MatDialogModule,
-    InfiniteScrollModule
+    ScrollingModule,
+    MatSortModule
   ],
   exports: [RouterModule]
 })

@@ -15,7 +15,7 @@ export class QuestionsService {
   }
 
   getList(config: QueryConfig): Observable<object> {
-    return this.getRequest('search/advanced', config);
+    return this.getRequest('search/advanced', config)
   }
 
   getRequest(url: string, queryParams: QueryConfig): Observable<object> {

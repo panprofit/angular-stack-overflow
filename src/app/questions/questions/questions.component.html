@@ -14,34 +14,24 @@
           color="primary">Search
   </button>
 </form>
+
 <mat-card>
   <mat-card-content>
-    <mat-table [dataSource]="questionsList$">
-      <ng-container cdkColumnDef="author">
-        <mat-header-cell fxFlex="20%"
-                         *cdkHeaderCellDef>Author
-        </mat-header-cell>
-        <mat-cell fxFlex="20%"
-                  *cdkCellDef="let question">{{question?.owner?.display_name | unescape}}</mat-cell>
-      </ng-container>
-
-      <ng-container cdkColumnDef="title">
-        <mat-header-cell *cdkHeaderCellDef>Title</mat-header-cell>
-        <mat-cell *cdkCellDef="let question">{{question.title | unescape}}</mat-cell>
-      </ng-container>
-
-      <ng-container cdkColumnDef="date">
-        <mat-header-cell fxFlex="15%"
-                         *cdkHeaderCellDef>Creation date
-        </mat-header-cell>
-        <mat-cell fxFlex="15%"
-                  *cdkCellDef="let question">{{question.creation_date * 1000 | date: 'medium'}}</mat-cell>
-      </ng-container>
-
-      <mat-header-row *cdkHeaderRowDef="['author', 'title', 'date']; sticky: true"></mat-header-row>
-      <mat-row *cdkRowDef="let question; columns: ['author', 'title', 'date']"
-               title="Click to preview"
-               (click)="openModal(question)"></mat-row>
-    </mat-table>
+    <div class="row header">
+      <div fxFlex="20%">Author</div>
+      <div fxFlex="65%">Title</div>
+      <div fxFlex="15%">Creation date</div>
+    </div>
+    <cdk-virtual-scroll-viewport class="viewport"
+                                 (scrolledIndexChange)="onScroll($event)"
+                                 itemSize="48">
+      <div class="row"
+           *cdkVirtualFor="let question of questionsList$"
+           (click)="openModal(question)">
+        <div fxFlex="20%">{{question.owner?.display_name | unescape}}</div>
+        <div fxFlex="65%">{{question.title | unescape}}</div>
+        <div fxFlex="15%">{{question.creation_date * 1000 | date: 'medium'}}</div>
+      </div>
+    </cdk-virtual-scroll-viewport>
   </mat-card-content>
 </mat-card>

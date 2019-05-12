@@ -28,9 +28,7 @@
         <mat-chip *ngFor="let tag of question.tags"
                   class="mat-chip"
                   title="Search questions by tag"
-                  (click)="modal.close()"
-                  [routerLink]="['/']"
-                  [queryParams]="{tagged: tag}">{{tag}}
+                  (click)="searchTag(tag)">{{tag}}
         </mat-chip>
       </mat-chip-list>
     </div>
@@ -38,7 +36,7 @@
          fxLayoutAlign="center">
       <button mat-raised-button
               title="Close modal"
-              (click)="modal.close()">Close
+              mat-dialog-close>Close
       </button>
     </div>
   </div>
